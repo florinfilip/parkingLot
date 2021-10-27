@@ -20,15 +20,16 @@ public abstract class ParkingTicketDetails {
     @JoinColumn(name = "parking_spot_id")
     private ParkingSpot parkingSpot;
 
-    @JsonFormat(pattern = "dd-MM-yyyy h:mm a", shape = JsonFormat.Shape.STRING)
+    @JsonFormat(pattern = "dd-MM-yyyy hh:mm a", shape = JsonFormat.Shape.STRING)
     @Column(name = "issued_at", nullable = false)
     private LocalDateTime issuedAt;
 
-    @JsonFormat(pattern = "dd-MM-yyyy h:mm a", shape = JsonFormat.Shape.STRING)
+    @JsonFormat(pattern = "dd-MM-yyyy hh:mm a", shape = JsonFormat.Shape.STRING)
     @Column(name = "expires_at", nullable = false)
     private LocalDateTime expiresAt;
 
-    @OneToOne(optional = false)
+
+   @OneToOne(optional = false)
     @JoinColumn(name = "vehicle_id", nullable = false)
     private Vehicle vehicle;
 

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,7 +22,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final TicketService ticketService;
-    private final UserService userService;
+    private final ParkingSpotServiceImpl parkingSpotService;
 
     @Override
     public Reservation saveReservation(Reservation newReservation) {
@@ -29,12 +30,12 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation reservation = reservationRepository.findById(newReservation.getId()).orElse(new Reservation());
         reservation.setUser(newReservation.getUser());
         reservation.setVehicle(newReservation.getVehicle());
-        reservation.setParkingSpot(newReservation.getParkingSpot());
-        reservation.setIssuedAt(LocalDateTime.now());
+        reservation.setParkingSpot(parkingSpotService.findProperSpotForVehicle(newReservation.getVehicle().getSize(),newReservation.getVehicle().getType()));
+        reservation.setIssuedAt(newReservation.getIssuedAt());
         reservation.setExpiresAt(newReservation.getExpiresAt());
         reservation.setStatus(ParkingTicketStatus.ACTIVE);
-        reservation.setParkingTicket(ticketService.createParkingTicketWithReservation(reservation));
 
+        reservation.setParkingTicket(ticketService.createParkingTicketWithReservation(reservation));
         return reservationRepository.save(reservation);
     }
 
@@ -83,11 +84,14 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public void deleteReservationAsUser(User user, int id){
+
         List<Reservation> reservationList =reservationRepository.findReservationsByUser(user);
-        if(reservationList.contains(reservationRepository.findById(id))){
+        Reservation reservation = reservationRepository.findById(id).get();
+        if(reservationList.contains(reservation) && isReservationValidToCancel(reservation)){
             deleteReservation(id);
         }
-        throw new RuntimeException("Reservation not found!");
+
+       else throw new RuntimeException("Reservation not found for user "+user.getUsername()+"!");
 
     }
 
@@ -117,11 +121,13 @@ return saveReservation(reservation);
     }
 
 
+
     public boolean isReservationValidToCancel(Reservation reservation){
-        if(LocalDateTime.now().compareTo(reservation.getIssuedAt())<3){
-            throw new RuntimeException("Cannot cancel, less than three days until reservation!");
+        int daysToReservation = reservation.getIssuedAt().compareTo(LocalDateTime.now());
+        if(daysToReservation<=3){
+            throw new RuntimeException("Cannot cancel, less than three days until reservation! You have " + daysToReservation+" days to the reservation.");
         }
-return true;
+else return true;
     }
 
 

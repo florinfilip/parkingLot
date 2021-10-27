@@ -1,6 +1,7 @@
 package com.endava.parkinglot.config;
 
 import com.endava.parkinglot.service.Impl.UserServiceImpl;
+import com.endava.parkinglot.utils.Mappings;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -54,23 +55,8 @@ public BCryptPasswordEncoder passwordEncoder(){
                 .mvcMatchers("/addUser/**").hasAuthority("ADMIN")
                 .mvcMatchers("/deleteUser").hasAuthority("ADMIN")
                 .mvcMatchers("/parkingSpots/**").hasAuthority("ADMIN")
-                .mvcMatchers("/parkingSpots/**").hasAuthority("ADMIN")
+                .mvcMatchers(Mappings.UPDATE_USER).hasAuthority("USER")
                 .anyRequest().authenticated();
-
-
-
-//
-//
-//        http.httpBasic();
-//        http.csrf().disable().anonymous().principal("Guest").authorities("GUEST")
-//                .and()
-//                .authorizeRequests()
-//                .mvcMatchers("/users").hasRole("ADMIN")
-//                .mvcMatchers("/user").hasAuthority("ADMIN")
-//                .mvcMatchers("/addUser").hasAuthority("ADMIN")
-//                .mvcMatchers("/deleteUser").hasAuthority("ADMIN")
-//                .anyRequest().permitAll();
-
     }
 
 

@@ -4,6 +4,7 @@ import com.endava.parkinglot.parking.ParkingSpot;
 import com.endava.parkinglot.parking.Type;
 import com.endava.parkinglot.reservation.Reservation;
 import com.endava.parkinglot.user.User;
+import com.endava.parkinglot.vehicle.Size;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,5 +17,5 @@ public interface ParkingSpotRepository extends JpaRepository<ParkingSpot,Integer
     Optional<ParkingSpot> findParkingSpotByNumber(int number);
     Optional<List<ParkingSpot>> findParkingSpotsByType(Type type);
     Optional<List<ParkingSpot>> findParkingSpotsByFree(boolean free);
-
+    Optional<List<ParkingSpot>> findParkingSpotsByTypeAndAndSize(Type type, Size size);
 }

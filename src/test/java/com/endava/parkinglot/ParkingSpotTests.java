@@ -1,6 +1,8 @@
 package com.endava.parkinglot;
 
+import com.endava.parkinglot.parking.Type;
 import com.endava.parkinglot.repositories.ParkingSpotRepository;
+import com.endava.parkinglot.vehicle.Size;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -30,6 +32,18 @@ public class ParkingSpotTests {
         date1.compareTo(date2);
         System.out.println(daysBetween);
         System.out.println(date1.compareTo(date2));
+    }
+
+
+    @Test
+    void shouldDisplayParkingLotsByTypeAndSize(){
+        parkingSpotRepository.findParkingSpotsByTypeAndAndSize(Type.ELECTRIC,Size.CAR)
+                .get()
+                .stream()
+                .filter(parkingSpot -> parkingSpot.getFree()
+                        .equals(true))
+                .collect(Collectors.toList())
+                .forEach(spot-> System.out.println(spot.toString()));
     }
 
 }

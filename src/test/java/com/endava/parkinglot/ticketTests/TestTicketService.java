@@ -20,7 +20,7 @@ public class TestTicketService {
     @BeforeEach
     void setUp() {
         autoCloseable = MockitoAnnotations.openMocks(this);
-        testTicketService = new TicketServiceImpl(ticketRepository);
+      //  testTicketService = new TicketServiceImpl(ticketRepository);
     }
 
     @AfterEach

@@ -5,6 +5,7 @@ import com.endava.parkinglot.parking.ticket.ParkingTicketDetails;
 import com.endava.parkinglot.repositories.TicketRepository;
 import com.endava.parkinglot.reservation.Reservation;
 import com.endava.parkinglot.service.TicketService;
+import com.endava.parkinglot.vehicle.Vehicle;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 public class TicketServiceImpl implements TicketService {
 
     private final TicketRepository ticketRepository;
+    private final ParkingSpotServiceImpl parkingSpotService;
 
     @Override
     public List<ParkingTicket> getParkingTickets(){
@@ -54,10 +56,13 @@ public class TicketServiceImpl implements TicketService {
     }
 
     public ParkingTicket setAndSaveTicketDetails(ParkingTicketDetails ticketDetails){
+        Vehicle vehicle = ticketDetails.getVehicle();
+
+
         ParkingTicket parkingTicket = ticketRepository.findById(ticketDetails.getId()).orElse(new ParkingTicket());
-        parkingTicket.setParkingSpot(ticketDetails.getParkingSpot());
-        parkingTicket.setVehicle(ticketDetails.getVehicle());
-        parkingTicket.setIssuedAt(LocalDateTime.now());
+        parkingTicket.setParkingSpot(parkingSpotService.findProperSpotForVehicle(vehicle.getSize(),vehicle.getType()));
+        parkingTicket.setVehicle(vehicle);
+        parkingTicket.setIssuedAt(ticketDetails.getIssuedAt());
         parkingTicket.setExpiresAt(ticketDetails.getExpiresAt());
 
         return ticketRepository.save(parkingTicket);
@@ -71,3 +76,4 @@ public class TicketServiceImpl implements TicketService {
         return true;
     }
 }
+

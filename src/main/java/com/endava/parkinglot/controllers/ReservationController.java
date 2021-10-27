@@ -39,9 +39,7 @@ public class ReservationController {
     @PostMapping("/new")
     public ResponseEntity createReservation(@RequestBody Reservation reservation){
         reservation.setUser(getUserPrincipal());
-        reservationService.saveReservation(reservation);
-
-return new ResponseEntity(HttpStatus.CREATED);
+return new ResponseEntity(reservationService.saveReservation(reservation),HttpStatus.CREATED);
     }
 
     @DeleteMapping(DELETE+"/{id}")
@@ -49,6 +47,12 @@ return new ResponseEntity(HttpStatus.CREATED);
          reservationService.deleteReservation(id);
 return new ResponseEntity(HttpStatus.GONE);
             }
+
+    @DeleteMapping(DELETE+"/user"+"/{id}")
+    public ResponseEntity deleteReservationAsUser(@PathVariable int id){
+        reservationService.deleteReservationAsUser(getUserPrincipal(),id);
+        return new ResponseEntity(HttpStatus.GONE);
+    }
 
 
     @PutMapping(UPDATE)

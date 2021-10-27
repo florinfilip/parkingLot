@@ -47,11 +47,8 @@ public class ParkingSpotServiceImpl implements ParkingSpotService {
 
     @Override
     public ParkingSpot updateParkingSpot(ParkingSpot updatedParkingSpot) {
-
         parkingSpotExists(updatedParkingSpot.getId());
         return saveParkingSpot(updatedParkingSpot);
-
-
     }
 
     @Override
@@ -84,5 +81,19 @@ public class ParkingSpotServiceImpl implements ParkingSpotService {
     public List<ParkingSpot> findParkingSpotsByFree(boolean free){
         return parkingSpotRepository.findParkingSpotsByFree(free).get();
     }
+
+    public ParkingSpot findProperSpotForVehicle(Size size, Type type ){
+List<ParkingSpot> parkingSpotsList = parkingSpotRepository.findParkingSpotsByTypeAndAndSize(type,size).get();
+        return parkingSpotsList.stream()
+                .filter(parkingSpot -> parkingSpot.getFree()
+                        .equals(true))
+                .findFirst()
+                .get();
+
+
+
+
+    }
+
 
 }
